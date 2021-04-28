@@ -104,7 +104,6 @@ struct nbd_context hdd_atad =
         .blocksize = 512,
         .export_init = hdd_atad_init,
         .read = hdd_atad_read,
-        .write = hdd_atad_write,
 		.flush = hdd_atad_flush,
 };
 
