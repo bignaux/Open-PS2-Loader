@@ -1379,7 +1379,8 @@ static int loadHdldSvr(void)
 					Clear it, otherwise it will get displayed after the server is closed.	*/
 
     unloadPads();
-    sysReset(0);
+    // sysReset(0);
+    // sysReset(SYS_LOAD_MC_MODULES);
 
     ret = ethLoadInitModules();
     if (ret == 0) {
@@ -1391,6 +1392,7 @@ static int loadHdldSvr(void)
         }
     }
 
+    // mcInit(MC_TYPE_XMC);
     padInit(0);
 
     // init all pads
@@ -1432,10 +1434,14 @@ static void unloadHdldSvr(void)
 
 void handleHdlSrv()
 {
+    char temp[256];
     // prepare for hdl, display screen with info
     guiRenderTextScreen(_l(_STR_STARTINGHDL));
-    if (loadHdldSvr() == 0)
-        guiMsgBox(_l(_STR_RUNNINGHDL), 0, NULL);
+    if (loadHdldSvr() == 0) {
+        snprintf(temp, sizeof(temp), "%s\nIP: %d.%d.%d.%d %s", _l(_STR_RUNNINGHDL),
+          ps2_ip[0], ps2_ip[1], ps2_ip[2], ps2_ip[3], ps2_ip_use_dhcp ? "DHCP" : "");
+        guiMsgBox(temp, 0, NULL);
+      }
     else
         guiMsgBox(_l(_STR_STARTFAILHDL), 0, NULL);
 

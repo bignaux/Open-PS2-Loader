@@ -12,5 +12,6 @@
 #include <sysclib.h>
 #include <thbase.h>
 #include <thsemap.h>
+#include <mcman.h>
 
 #endif
