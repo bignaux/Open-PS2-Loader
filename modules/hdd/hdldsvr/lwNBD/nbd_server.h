@@ -1,4 +1,4 @@
-/****************************************************************//**
+/****************************************************************/ /**
  *
  * @file nbd_server.h
  *
@@ -88,39 +88,40 @@ extern "C" {
 /** @ingroup nbd
  * NBD context containing callback functions for NBD transfers
  */
-struct nbd_context {
+struct nbd_context
+{
 
-	char export_name[32];
-	char export_desc[64];
+    char export_name[32];
+    char export_desc[64];
     uint64_t export_size; /* size of export in byte */
     uint16_t eflags;      /* per-export flags */
     uint16_t blocksize;
 
     int (*export_init)(struct nbd_context *ctx);
 
-  /**
+    /**
    * Open file for read/write.
    * @param fname Filename
    * @param mode Mode string from NBD RFC 1350 (netascii, octet, mail)
    * @param write Flag indicating read (0) or write (!= 0) access
    * @returns File handle supplied to other functions
    */
-//  void* (*open)(const char* fname, const char* mode, u8_t write);
-  /**
+    //  void* (*open)(const char* fname, const char* mode, u8_t write);
+    /**
    * Close file handle
    * @param handle File handle returned by open()
    */
-//  void (*close)(void* handle);
-  /**
+    //  void (*close)(void* handle);
+    /**
    * Read from file 
    * @param handle File handle returned by open()
    * @param buf Target buffer to copy read data to
    * @param bytes Number of bytes to copy to buf
    * @returns &gt;= 0: Success; &lt; 0: Error
    */
-//  int (*read)(void* handle, void* buf, int bytes);
-  int (*read)(void *buffer, uint64_t offset,uint32_t length);
-  /**
+    //  int (*read)(void* handle, void* buf, int bytes);
+    int (*read)(void *buffer, uint64_t offset, uint32_t length);
+    /**
    * Write to file
    * @param handle File handle returned by open()
    * @param pbuf PBUF adjusted such that payload pointer points
@@ -128,13 +129,12 @@ struct nbd_context {
    *             NBD headers are stripped off.
    * @returns &gt;= 0: Success; &lt; 0: Error
    */
-//  int (*write)(void* handle, struct pbuf* p);
-  int (*write)(void *buffer, uint64_t offset,uint32_t length);
-  int (*flush)(void);
-
+    //  int (*write)(void* handle, struct pbuf* p);
+    int (*write)(void *buffer, uint64_t offset, uint32_t length);
+    int (*flush)(void);
 };
 
-int nbd_init(struct nbd_context* ctx);
+int nbd_init(struct nbd_context *ctx);
 
 #ifdef __cplusplus
 }

@@ -1439,10 +1439,9 @@ void handleHdlSrv()
     guiRenderTextScreen(_l(_STR_STARTINGHDL));
     if (loadHdldSvr() == 0) {
         snprintf(temp, sizeof(temp), "%s\nIP: %d.%d.%d.%d %s", _l(_STR_RUNNINGHDL),
-          ps2_ip[0], ps2_ip[1], ps2_ip[2], ps2_ip[3], ps2_ip_use_dhcp ? "DHCP" : "");
+                 ps2_ip[0], ps2_ip[1], ps2_ip[2], ps2_ip[3], ps2_ip_use_dhcp ? "DHCP" : "");
         guiMsgBox(temp, 0, NULL);
-      }
-    else
+    } else
         guiMsgBox(_l(_STR_STARTFAILHDL), 0, NULL);
 
     // restore normal functionality again

@@ -22,40 +22,39 @@ static int tcp_server_tid;
 
 int hdd_fake_init(struct nbd_context *ctx)
 {
-	ctx->export_size = 1073741824;
-	return 0;
+    ctx->export_size = 1073741824;
+    return 0;
 }
 
-int hdd_fake_read(void *buffer, uint64_t offset,uint32_t length)
+int hdd_fake_read(void *buffer, uint64_t offset, uint32_t length)
 {
-	register uint32_t i = 0;
-	register uint32_t len = length*512;
-	uint64_t *pbuf = buffer;
-//	static int count = 0;
-//		for (i=0;i<len;i++)
-//		{
-//		    if (i % sizeof(uint64_t) == 0)
-//		        sprintf (buffer + i, "%08llx",offset + i ); // too slow, rewrite with bit op
-//		}
+    register uint32_t i = 0;
+    register uint32_t len = length * 512;
+    uint64_t *pbuf = buffer;
+    //	static int count = 0;
+    //		for (i=0;i<len;i++)
+    //		{
+    //		    if (i % sizeof(uint64_t) == 0)
+    //		        sprintf (buffer + i, "%08llx",offset + i ); // too slow, rewrite with bit op
+    //		}
 
-	/* make only first int per block */
-	while(i<len)
-	{
-		*pbuf = offset + i;
-		i += 512;
-		pbuf++;
-	}
-	/* slow too because still not one block read operation
+    /* make only first int per block */
+    while (i < len) {
+        *pbuf = offset + i;
+        i += 512;
+        pbuf+=512;
+    }
+    /* slow too because still not one block read operation
 	while(i<len)
 	{
 		*pbuf = offset + i;
 		i += sizeof(uint64_t);
 		pbuf++;
 	}*/
-	return 0;
+    return 0;
 }
 
-int hdd_fake_write(void *buffer, uint64_t offset,uint32_t length)
+int hdd_fake_write(void *buffer, uint64_t offset, uint32_t length)
 {
     return 0;
 }
@@ -82,19 +81,19 @@ int hdd_atad_init(struct nbd_context *ctx)
     return 1;
 }
 
-int hdd_atad_read(void *buffer, uint64_t offset,uint32_t length)
+int hdd_atad_read(void *buffer, uint64_t offset, uint32_t length)
 {
-    return ata_device_sector_io(0, buffer, (uint32_t) offset, length, ATA_DIR_READ);
+    return ata_device_sector_io(0, buffer, (uint32_t)offset, length, ATA_DIR_READ);
 }
 
-int hdd_atad_write(void *buffer, uint64_t offset,uint32_t length)
+int hdd_atad_write(void *buffer, uint64_t offset, uint32_t length)
 {
-    return ata_device_sector_io(0, buffer, (uint32_t) offset, length, ATA_DIR_WRITE);
+    return ata_device_sector_io(0, buffer, (uint32_t)offset, length, ATA_DIR_WRITE);
 }
 
 int hdd_atad_flush(void)
 {
-	return ata_device_flush_cache(0);
+    return ata_device_flush_cache(0);
 }
 
 struct nbd_context hdd_atad =
@@ -104,7 +103,7 @@ struct nbd_context hdd_atad =
         .blocksize = 512,
         .export_init = hdd_atad_init,
         .read = hdd_atad_read,
-		.flush = hdd_atad_flush,
+        .flush = hdd_atad_flush,
 };
 
 
@@ -153,28 +152,29 @@ struct nbd_context hdd_atad =
 
 int mc_mcman_init(struct nbd_context *ctx)
 {
-	int cardsize;
-	u8 flags;
-	u16 blocksize;
-	s16 pagesize;
+    int cardsize;
+    u8 flags;
+    u16 blocksize;
+    s16 pagesize;
 
-	if ( McGetCardSpec(0, 0, &pagesize, &blocksize, &cardsize, &flags) != 0);
-		return 1;
+    if (McGetCardSpec(0, 0, &pagesize, &blocksize, &cardsize, &flags) != 0)
+        ;
+    return 1;
 
-	ctx->blocksize = (uint16_t)pagesize;
+    ctx->blocksize = (uint16_t)pagesize;
     ctx->export_size = (uint64_t)cardsize;
     return 0;
 }
 
-int mc_mcman_read(void *buffer, uint64_t offset,uint32_t length)
+int mc_mcman_read(void *buffer, uint64_t offset, uint32_t length)
 {
     return McReadPage(0, 0, offset, buffer);
 }
 
-int mc_mcman_write(void *buffer, uint64_t offset,uint32_t length)
+int mc_mcman_write(void *buffer, uint64_t offset, uint32_t length)
 {
-	return 0;
-//    return McWritePage(int port, int slot, int page, void *pagebuf, void *eccbuf);
+    return 0;
+    //    return McWritePage(int port, int slot, int page, void *pagebuf, void *eccbuf);
 }
 
 struct nbd_context mc_mcman =
