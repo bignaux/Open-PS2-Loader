@@ -48,14 +48,16 @@
 //#include "lwip/pbuf.h"
 //#include "lwip/mem.h"
 
-//#include <errno.h>
-//#include <malloc.h>
+#define NBD_SERVER_PORT 10809
+
+#ifdef PS2SDK
+
 #include <ps2ip.h>
 #include <stdio.h>
 #include <sysclib.h>
 #include <stdint.h>
-
-#define NBD_SERVER_PORT 10809
+//#include <errno.h>
+//#include <malloc.h>
 
 //TODO: Missing <byteswap.h> in PS2SDK
 static inline uint64_t bswap64(uint64_t x)
@@ -76,10 +78,7 @@ static inline uint64_t bswap64(uint64_t x)
 // https://en.cppreference.com/w/c/types/integer
 #define UINT64_MAX 0xffffffffffffffff
 #define UINT64_C(x) ((x) + (UINT64_MAX - UINT64_MAX))
-
-//#ifdef PS2SDK
-//
-//#endif
+#endif
 
 #ifdef __cplusplus
 extern "C" {

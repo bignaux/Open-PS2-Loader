@@ -18,6 +18,8 @@ struct irx_export_table _exp_hdldsvr;
 void tcp_server_thread(void *args);
 static int tcp_server_tid;
 
+
+
 /****************************************************************************************/
 
 int hdd_fake_init(struct nbd_context *ctx)
@@ -26,31 +28,50 @@ int hdd_fake_init(struct nbd_context *ctx)
     return 0;
 }
 
-int hdd_fake_read(void *buffer, uint64_t offset, uint32_t length)
+/* return ascii formated buffer with offset so 2 by 16 bytes columns for hex dumpers
+ * slow too because still not one block read operation */
+int hdd_fake_read1(void *buffer, uint64_t offset, uint32_t length)
 {
     register uint32_t i = 0;
     register uint32_t len = length * 512;
     uint64_t *pbuf = buffer;
-    //	static int count = 0;
-    //		for (i=0;i<len;i++)
-    //		{
-    //		    if (i % sizeof(uint64_t) == 0)
-    //		        sprintf (buffer + i, "%08llx",offset + i ); // too slow, rewrite with bit op
-    //		}
 
-    /* make only first int per block */
+    while (i < len) {
+        *pbuf = offset + i;
+        i += sizeof(uint64_t);
+        pbuf++;
+    }
+    return 0;
+}
+
+/* return buffer with offset so 2 by 16 bytes columns for hex dumpers
+ * slow too because still not one block read operation */
+//int hdd_fake_read2(void *buffer, uint64_t offset, uint32_t length)
+//{
+//    register uint32_t i = 0;
+//    register uint32_t len = length * 512;
+//
+//    static int count = 0;
+//    for (i = 0; i < len; i++) {
+//        if (i % sizeof(uint64_t) == 0)
+//            sprintf(buffer + i, "%08llx", offset + i);
+//    }
+//    return 0;
+//}
+
+/* return buffer with offset in the first bytes of the bloc.
+ * make only first int per block */
+int hdd_fake_read_fast(void *buffer, uint64_t offset, uint32_t length)
+{
+    register uint32_t i = 0;
+    register uint32_t len = length * 512;
+    uint64_t *pbuf = buffer;
+
     while (i < len) {
         *pbuf = offset + i;
         i += 512;
-        pbuf+=512;
+        pbuf += 512;
     }
-    /* slow too because still not one block read operation
-	while(i<len)
-	{
-		*pbuf = offset + i;
-		i += sizeof(uint64_t);
-		pbuf++;
-	}*/
     return 0;
 }
 
@@ -65,7 +86,7 @@ struct nbd_context hdd_fake =
         .export_desc = "Fake hdd",
         .blocksize = 512,
         .export_init = hdd_fake_init,
-        .read = hdd_fake_read,
+        .read = hdd_fake_read_fast,
         .write = hdd_fake_write,
 };
 
@@ -212,5 +233,11 @@ int _shutdown(void)
 
 void tcp_server_thread(void *args)
 {
-    nbd_init(&hdd_atad);
+	//TODO : platform specific block device detection then nbd_context initialization go here
+
+    struct nbd_context *ctx = &hdd_atad;
+    //TODO : many export in a loop
+    if (ctx->export_init(ctx) != 0)
+        return;
+    nbd_init(ctx);
 }
