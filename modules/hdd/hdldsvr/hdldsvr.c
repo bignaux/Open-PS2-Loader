@@ -18,8 +18,6 @@ struct irx_export_table _exp_hdldsvr;
 void tcp_server_thread(void *args);
 static int tcp_server_tid;
 
-
-
 /****************************************************************************************/
 
 int hdd_fake_init(struct nbd_context *ctx)
