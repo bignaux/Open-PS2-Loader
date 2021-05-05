@@ -42,9 +42,9 @@ I_memcpy
 I_memset
 sysclib_IMPORTS_end
 
-//stdio_IMPORTS_start
-//I_printf
-//stdio_IMPORTS_end
+stdio_IMPORTS_start
+I_printf
+stdio_IMPORTS_end
 
 xmcman_IMPORTS_start
 I_McDetectCard

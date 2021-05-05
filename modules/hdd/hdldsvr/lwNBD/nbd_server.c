@@ -255,7 +255,7 @@ int transmission_phase(int tcp_client_socket, struct nbd_context *ctx)
                     if (blkremains <= bufbklsz)
                         sendflag = 0;
 
-                    r = ctx->read(buffer, offset, bufbklsz);
+                    r = ctx->read(buffer, offset/512, bufbklsz);
 
                     if (r == 0) {
                         r = send(tcp_client_socket, buffer, byteread, sendflag);

@@ -102,6 +102,8 @@ int hdd_atad_init(struct nbd_context *ctx)
 
 int hdd_atad_read(void *buffer, uint64_t offset, uint32_t length)
 {
+    printf("hdd_atad_read(x, %d, %d)\n", (int)offset, (int)length);
+
     return ata_device_sector_io(0, buffer, (uint32_t)offset, length, ATA_DIR_READ);
 }
 

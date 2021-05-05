@@ -9,6 +9,7 @@
 #include <poweroff.h>
 #include <ps2ip.h>
 #include "smsutils.h"
+#include <stdio.h>
 #include <sysclib.h>
 #include <thbase.h>
 #include <thsemap.h>
